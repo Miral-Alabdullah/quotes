@@ -6,6 +6,9 @@ package quotes;
 import com.google.gson.Gson;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -22,6 +25,48 @@ public class App {
 
     }
 
+    public static Random randomNumber() {
+        Random randomNumber = new Random();
+        return randomNumber;
+    }
+
+    public static String getQuoteFroAPI() {
+        String urlOfApi = "";
+
+        try {
+            URL url = new URL(urlOfApi);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            int status = connection.getResponseCode();
+
+            if(status == 404){
+                getQuote(randomNumber().nextInt());
+            } else if(status == 200){
+                InputStream inputStream = connection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String line = bufferedReader.readLine();
+                while(line != null){
+                    StringBuilder quotes = new StringBuilder();
+                    quotes.append(bufferedReader.readLine());
+                    // building a string   s = s+buffreedReader.readLine();   StringBuilder
+                    System.out.println(quotes);
+//                    line = bufferedReader.readLine();
+                }
+                bufferedReader.close();
+            } else{
+                System.out.println("An error occurred with status "+status);
+            }
+
+            connection.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return urlOfApi;
+    }
 
     public static String getQuote(int randomNum) throws FileNotFoundException {
         Gson gson = new Gson();
