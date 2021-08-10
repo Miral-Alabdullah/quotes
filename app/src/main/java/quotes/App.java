@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -18,46 +20,46 @@ public class App {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        System.out.println(new App().getGreeting());
+//        System.out.println(new App().getGreeting());
+
         Random randomNumber = new Random();
-        int randomNum = randomNumber.nextInt(138);
-        System.out.println(getQuote(randomNum));
+        int randomNum = randomNumber.nextInt(1);
+        System.out.println(getQuote(randomNum, "recentquotes.json"));
+        String url = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
+        getQuoteFroAPI(url);
 
     }
 
-    public static Random randomNumber() {
-        Random randomNumber = new Random();
-        return randomNumber;
-    }
-
-    public static String getQuoteFroAPI() {
+    public static String getQuoteFroAPI(String url) {
         String urlOfApi = "";
 
         try {
-            URL url = new URL(urlOfApi);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            List<QuoteApi> quoteApiList = new ArrayList<QuoteApi>();
+            Gson gson = new Gson();
+            URL newUrl = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) newUrl.openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             int status = connection.getResponseCode();
-
-            if(status == 404){
-                getQuote(randomNumber().nextInt());
-            } else if(status == 200){
+            if (status == 200) {
                 InputStream inputStream = connection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String line = bufferedReader.readLine();
-                while(line != null){
-                    StringBuilder quotes = new StringBuilder();
-                    quotes.append(bufferedReader.readLine());
-                    // building a string   s = s+buffreedReader.readLine();   StringBuilder
-                    System.out.println(quotes);
-//                    line = bufferedReader.readLine();
+                StringBuilder stringBuilder = new StringBuilder();
+                while (line != null) {
+                    stringBuilder.append(line + "\n");
+                    line = bufferedReader.readLine();
                 }
+                QuoteApi quotes = gson.fromJson(stringBuilder.toString(),QuoteApi.class);
+                quoteApiList.add(quotes);
+                Writer writer = new FileWriter("dataFromAPI.json");
+                new Gson().toJson(quoteApiList, writer);
+                System.out.println("\nFrom API : \n" + quotes.toString());
+                writer.close();
                 bufferedReader.close();
-            } else{
-                System.out.println("An error occurred with status "+status);
+            } else {
+                System.out.println("An error occurred with status " + status);
             }
-
             connection.disconnect();
 
         } catch (MalformedURLException e) {
@@ -68,13 +70,12 @@ public class App {
         return urlOfApi;
     }
 
-    public static String getQuote(int randomNum) throws FileNotFoundException {
+
+    public static String getQuote(int randomNum, String filePath) throws FileNotFoundException {
         Gson gson = new Gson();
-        String root = System.getProperty("user.dir");
-        String filePath = root+File.separator+"app/src/main/resources/recentquotes.json";
         Scanner readFile = new Scanner(new File(filePath));
         StringBuilder quotes = new StringBuilder();
-        while(readFile.hasNextLine()){
+        while (readFile.hasNextLine()) {
             quotes.append(readFile.nextLine());
         }
         Quote[] allQuotes = gson.fromJson(quotes.toString(), Quote[].class);

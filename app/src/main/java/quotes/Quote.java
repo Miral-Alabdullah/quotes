@@ -28,7 +28,8 @@ public class Quote {
 
     @Override
     public String toString() {
-        return  "author:" + getAuthor() + '\'' + ", text:" + getText() + '\'';
+        return  getText() +
+                '\n' + "     -"+ getAuthor();
     }
 
 }
