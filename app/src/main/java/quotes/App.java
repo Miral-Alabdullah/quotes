@@ -9,21 +9,18 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+//    public String getGreeting() {
+//        return "Hello World!";
+//    }
 
     public static void main(String[] args) throws FileNotFoundException {
 //        System.out.println(new App().getGreeting());
 
         Random randomNumber = new Random();
-        int randomNum = randomNumber.nextInt(1);
+        int randomNum = randomNumber.nextInt(20);
         System.out.println(getQuote(randomNum, "recentquotes.json"));
         String url = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
         getQuoteFroAPI(url);
@@ -34,7 +31,7 @@ public class App {
         String urlOfApi = "";
 
         try {
-            List<QuoteApi> quoteApiList = new ArrayList<QuoteApi>();
+            List<QuoteApi> quoteApiList = new ArrayList<>();
             Gson gson = new Gson();
             URL newUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) newUrl.openConnection();

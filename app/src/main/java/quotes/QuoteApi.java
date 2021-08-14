@@ -8,6 +8,7 @@ public class QuoteApi {
 
     }
     public QuoteApi(String quoteText, String quoteAuthor) {
+        this();
         this.quoteText = quoteText;
         this.quoteAuthor = quoteAuthor;
     }

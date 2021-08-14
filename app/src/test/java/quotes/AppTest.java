@@ -13,11 +13,19 @@ import java.util.Scanner;
 
 
 public class AppTest {
+    @Test public void constructorFromApi(){
+        QuoteApi quoteApi = new QuoteApi();
+        assertTrue(quoteApi instanceof QuoteApi);
+    }
     @Test public void getAQuoteFromApi() {
         String url = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
         assertNotNull(App.getQuoteFroAPI(url));
     }
 
+    @Test public void constructorFromGson(){
+        Quote quote = new Quote();
+        assertTrue(quote instanceof Quote);
+    }
     @Test public void getAQuoteFromJson() throws FileNotFoundException {
         Gson gson = new Gson();
         Random randomNumber = new Random();
