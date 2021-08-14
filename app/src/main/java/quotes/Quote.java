@@ -5,7 +5,12 @@ public class Quote {
     private String author;
     private String text;
 
+    public Quote(){
+
+    }
+
     public Quote(String author, String text) {
+        this();
         this.author = author;
         this.text = text;
     }
